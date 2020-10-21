@@ -1,16 +1,19 @@
-import React, {useState} from 'react';
+import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Marcellus Parley', number: '555-5555' },
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  const [ persons, setPersons ] = useState([]);
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ newFilter, setNewFilter ] = useState('');
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data);
+    });
+  }, []);
 
   const handleNameChange = (e) => {
     //console.log(e.target.value);
@@ -74,10 +77,10 @@ const AddNumber = ({ name, num, hName, hNum, addNum }) => {
       <h2>Add Number</h2>
       <form>
         <div>
-          name: <input onChange={hName} value={name} />
+          Name: <input onChange={hName} value={name} />
         </div>
         <div>
-          number: <input onChange={hNum} value={num} />
+          Number: <input onChange={hNum} value={num} />
         </div>
         <div>
           <button onClick={addNum} type='submit'>add</button>
