@@ -12,11 +12,22 @@ import AddNumber from './components/AddNumber';
  * numService handles all the interaction with server
  */
 
+const Notification = ({notification}) => {
+  if (notification === null) {
+    return null;
+  }
+
+  return (
+    <div className={notification.type}>{notification.message}</div>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons ] = useState([]);
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ newFilter, setNewFilter ] = useState('');
+  const [ notification, setNewNotification ] = useState(null);
 
   //Initial fetching of phonebook data from server
   useEffect(() => {
@@ -40,6 +51,19 @@ const App = () => {
     setNewNumber(e.target.value);
   }
 
+  const notify = (message, mtype) => {
+    setNewNotification(
+      {
+        message: message,
+        type: mtype
+      }
+    );
+
+    setTimeout(() => {
+      setNewNotification(null);
+    }, 5000)
+  }
+
   //Handler for add number button
   const addNumber = (e) => {
     e.preventDefault();
@@ -50,16 +74,19 @@ const App = () => {
     //if user would like to update their number
     if ( pin !== -1) {
       const pid = persons[pin].id;
-      if (window.confirm(`${newName} is already added to the phonebook, would you like to update the number?`)) {
+      if (window.confirm(`Would you like to update ${p.name}'s number?`)) {
         numService
           .updateNumber(pid, p)
           .then(returnedPerson => {
             setPersons(persons.map(per => per.id !== pid ? per : returnedPerson));
             setNewNumber('');
             setNewName('');
+            notify(`Updated ${p.name}'s number`, 'success')
           })
           .catch(e => {
-            alert('Couldn\'t update number');
+            //alert('Couldn\'t update number');
+            notify(`Couldn't update ${p.name}'s number - not on server`, 'error');
+            setPersons(persons.filter(p => p.id !== pid));
           })
       }
     } else {
@@ -69,6 +96,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
+          notify(`Added ${p.name}'s number`, 'success')
         });
     }
   }
@@ -81,9 +109,15 @@ const App = () => {
         .deleteNumber(id)
         .then(res => {
           setPersons(persons.filter(p => p.id !== id));
+          notify(`Deleted ${name}'s number`, 'success');
         })
         .catch(e => {
-          alert(`Unable to delete number for ${name}`);
+          //alert(`Unable to delete number for ${name}`);
+          notify(
+            `Couldn't delete ${name}'s number, already removed from server`,
+            'error'
+          );
+          setPersons(persons.filter(p => p.id !== id));
         })
     }
   }
@@ -94,6 +128,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification notification={notification} />
       <h1>Phonebook</h1>
       <Filter handler={handleFilterChange} value={newFilter} />
       <AddNumber name={newName} num={newNumber} hName={handleNameChange} 
@@ -102,62 +137,5 @@ const App = () => {
     </div>
   );
 }
-
-/*
-const NumList = ({ filter, persons, handler }) => {
-  return (
-    <div>
-      <h2>Numbers</h2>
-      <ul>
-        {persons.filter(filter).map((p) => {
-          return (
-            <Person 
-              key={p.name} 
-              person={p} 
-              handler={handler} 
-            />
-          )
-        })}
-      </ul>
-    </div>
-  )
-}
-
-const Person = ({ person, handler }) => {
-  return (
-    <li>
-      {person.name} {person.number}
-      <button onClick={() => handler(person.id, person.name)}>Delete</button>
-    </li>
-  )
-}
-
-const AddNumber = ({ name, num, hName, hNum, addNum }) => {
-  return (
-    <div>
-      <h2>Add Number</h2>
-      <form>
-        <div>
-          Name: <input onChange={hName} value={name} />
-        </div>
-        <div>
-          Number: <input onChange={hNum} value={num} />
-        </div>
-        <div>
-          <button onClick={addNum} type='submit'>add</button>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-const Filter = ({ handler, value }) => {
-  return (
-    <div>
-      Filter <input onChange={handler} value={value} />
-    </div>
-  )
-}
-*/
 
 export default App;
