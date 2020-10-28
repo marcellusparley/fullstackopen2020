@@ -66,36 +66,35 @@ const App = () => {
   //Handler for add number button
   const addNumber = (e) => {
     e.preventDefault();
-    const p = { name: newName, number: newNumber };
-    const pin = persons.findIndex(p => p.name === newName);
+    const perOld = persons.find(p => p.name === newName);
 
     //Check if person's number is already in phonebook and asks
     //if user would like to update their number
-    if ( pin !== -1) {
-      const pid = persons[pin].id;
-      if (window.confirm(`Would you like to update ${p.name}'s number?`)) {
+    if (perOld) {
+      if (window.confirm(`Would you like to update ${newName}'s number?`)) {
         numService
-          .updateNumber(pid, p)
+          .updateNumber(perOld.id, {name: newName, number: newNumber})
           .then(returnedPerson => {
-            setPersons(persons.map(per => per.id !== pid ? per : returnedPerson));
+            setPersons(persons.map(per => per.id !== perOld.id ? per : returnedPerson));
             setNewNumber('');
             setNewName('');
-            notify(`Updated ${p.name}'s number`, 'success')
+            notify(`Updated ${newName}'s number`, 'success')
           })
-          .catch(e => {
+          .catch(err => {
+            console.log(err);
             //alert('Couldn\'t update number');
-            notify(`Couldn't update ${p.name}'s number - not on server`, 'error');
-            setPersons(persons.filter(p => p.id !== pid));
+            notify(`Couldn't update ${newName}'s number - not on server`, 'error');
+            setPersons(persons.filter(p => p.name !== newName && p.number !== newNumber));
           })
       }
     } else {
       numService
-        .createNumber(p)
+        .createNumber({name: newName, number: newNumber})
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
-          notify(`Added ${p.name}'s number`, 'success')
+          notify(`Added ${newName}'s number`, 'success')
         });
     }
   }

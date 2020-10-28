@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/5f9901ee8c3514112d85bef2
+Content-Type: application/json
+
+{
+    "name": "Anna",
+    "number": "040-1233345567"
+}
