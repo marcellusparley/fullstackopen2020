@@ -34,7 +34,11 @@ const App = () => {
       .getNumbers()
       .then(resData => {
         setPersons(resData);
-    });
+      })
+      .catch(err => {
+        notify(err.response.data.error, 'error');
+        console.log(err.response.data);
+      })
   }, []);
 
   const handleNameChange = (e) => {
@@ -82,9 +86,8 @@ const App = () => {
           })
           .catch(err => {
             console.log(err);
-            //alert('Couldn\'t update number');
-            notify(`Couldn't update ${newName}'s number - not on server`, 'error');
-            setPersons(persons.filter(p => p.name !== newName && p.number !== newNumber));
+            notify(err.response.data.error, 'error');
+            //setPersons(persons.filter(p => p.name !== newName && p.number !== newNumber));
           })
       }
     } else {
@@ -95,7 +98,11 @@ const App = () => {
           setNewName('');
           setNewNumber('');
           notify(`Added ${newName}'s number`, 'success')
-        });
+        })
+        .catch(err => {
+          notify(err.response.data.error, 'error');
+          console.log(err.response.data);
+        })
     }
   }
 
