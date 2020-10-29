@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Screwing things up, gracefully",
+    "author": "Tim Mit",
+    "url": "www.ieatass.tim",
+    "likes": 69
+}
