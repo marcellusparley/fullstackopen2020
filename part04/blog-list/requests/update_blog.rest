@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/5f9c980c7fe320230c8a2659
+Content-Type: application/json
+
+{
+  "title": "AAAAAAAAAAAAAAAAH",
+  "author": "Tim Mit",
+  "url": "www.ieatass.tim",
+  "likes": 69
+}
