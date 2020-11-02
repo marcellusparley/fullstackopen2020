@@ -4,12 +4,13 @@
  * */
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ blogAppend, notifier }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogURL, setBlogURL] = useState('')
-  const [blogLikes, setBlogLikes] = useState(0)
+  //const [blogLikes, setBlogLikes] = useState(0)
 
   // Adds blog via the blog service and notifies the user via
   // notifier which updates the notification state in App.js
@@ -20,7 +21,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
       title: blogTitle,
       author: blogAuthor,
       url: blogURL,
-      likes: Number(blogLikes)
+      //likes: Number(blogLikes)
     }
 
     try {
@@ -60,6 +61,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
           onChange={({ target }) => setBlogURL(target.value)}
         />
       </label>
+      {/*
       <label>Likes:
         <input
           type="number"
@@ -68,9 +70,15 @@ const BlogForm = ({ blogAppend, notifier }) => {
           onChange={({ target }) => setBlogLikes(target.value)}
         />
       </label>
+      */}
       <button type="submit">Add Blog</button>
     </form>
   )
+}
+
+BlogForm.propTypes = {
+  blogAppend: PropTypes.func.isRequired,
+  notifier: PropTypes.func.isRequired
 }
 
 export default BlogForm
