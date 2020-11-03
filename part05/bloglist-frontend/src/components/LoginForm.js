@@ -60,7 +60,7 @@ const LoginForm = ({ userChange, setToken, notifier }) => {
 
 LoginForm.propTypes = {
   userChange: PropTypes.func.isRequired,
-  setToken: PropTypes.func.isRequired,
+  // setToken: PropTypes.func.isRequired,
   notifier: PropTypes.func.isRequired
 }
 

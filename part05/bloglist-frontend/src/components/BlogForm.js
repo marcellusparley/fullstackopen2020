@@ -3,10 +3,9 @@
  * states for it's inputs
  * */
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const BlogForm = ({ blogAppend, notifier }) => {
+const BlogForm = ({ blogAppend }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogURL, setBlogURL] = useState('')
@@ -14,7 +13,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
 
   // Adds blog via the blog service and notifies the user via
   // notifier which updates the notification state in App.js
-  const addBlog = async (event) => {
+  const addBlog = (event) => {
     event.preventDefault()
 
     const blog = {
@@ -24,24 +23,21 @@ const BlogForm = ({ blogAppend, notifier }) => {
       //likes: Number(blogLikes)
     }
 
-    try {
-      const blogAdded = await blogService.create(blog)
-      notifier(`Added new blog '${blogAdded.title}'`, 'success')
+    setBlogTitle('')
+    setBlogAuthor('')
+    setBlogURL('')
 
-      // Passed in helper function to concat the returned blog
-      blogAppend(blogAdded)
-    } catch (err) {
-      notifier(err.response.data.error, 'error')
-    }
+    blogAppend(blog)
   }
 
   return (
-    <form onSubmit={addBlog}>
+    <form onSubmit={addBlog} className='blogForm'>
       <label>Title:
         <input
           type="text"
           value={blogTitle}
           name="Title"
+          className="blogTitle"
           onChange={({ target }) => setBlogTitle(target.value)}
         />
       </label>
@@ -50,6 +46,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
           type="text"
           value={blogAuthor}
           name="Author"
+          className='blogAuthor'
           onChange={({ target }) => setBlogAuthor(target.value)}
         />
       </label>
@@ -58,6 +55,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
           type="text"
           value={blogURL}
           name="URL"
+          className='blogURL'
           onChange={({ target }) => setBlogURL(target.value)}
         />
       </label>
@@ -77,8 +75,7 @@ const BlogForm = ({ blogAppend, notifier }) => {
 }
 
 BlogForm.propTypes = {
-  blogAppend: PropTypes.func.isRequired,
-  notifier: PropTypes.func.isRequired
+  blogAppend: PropTypes.func.isRequired
 }
 
 export default BlogForm

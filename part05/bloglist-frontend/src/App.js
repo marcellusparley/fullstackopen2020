@@ -56,20 +56,51 @@ const App = () => {
   }
 
   // Helper sent to BlogForm for adding new blog to list
-  const blogAppend = (newBlog) => {
-    blogFormRef.current.toggleVisibility()
-    setBlogs(blogs.concat(newBlog).sort(sortHelper))
+  const blogAppend = async (newBlog) => {
+
+    try {
+      const blogAdded = await blogService.create(newBlog)
+      notify(`Added new blog '${blogAdded.title}'`, 'success')
+
+      blogFormRef.current.toggleVisibility()
+      setBlogs(blogs.concat(blogAdded).sort(sortHelper))
+    } catch (err) {
+      notify(err.response.data.error, 'error')
+    }
   }
 
   // Helper sent to Blog for adding updated blog to list
-  const likeBlog = (updatedBlog) => {
-    const newBlogs = blogs.filter(b => b.id !== updatedBlog.id)
-    setBlogs(newBlogs.concat(updatedBlog).sort(sortHelper))
+  const likeBlog = async (updateBlog) => {
+
+    const newBlog = {
+      ...updateBlog,
+      likes: updateBlog.likes+1
+    }
+
+    try {
+      const blogAdded = await blogService.update(updateBlog.id, newBlog)
+      notify(`Liked '${blogAdded.title}'`, 'success')
+
+      const newBlogs = blogs.filter(b => b.id !== blogAdded.id)
+      setBlogs(newBlogs.concat(blogAdded).sort(sortHelper))
+    } catch (err) {
+      notify(err.response.data.error, 'error')
+    }
   }
 
   // Helper sent to Blog for removing from list
-  const removeBlog = (id) => {
-    setBlogs( blogs.filter(b => b.id !== id) )
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Do you really want to delete ${blog.name}?`)) {
+      try {
+        await blogService.deleteBlog(blog.id)
+        notify(`Deleted '${blog.title}'`, 'success')
+
+        // Passed in helper function to remove blog from list
+        setBlogs( blogs.filter(b => b.id !== blog.id) )
+      } catch (err) {
+        notify(err.response.data.error, 'error')
+      }
+    }
   }
 
   // The notify helper, passed to BlogForm and LoginForm
@@ -104,7 +135,7 @@ const App = () => {
           <button onClick={handleLogout}>Logout</button>
         </label>
         <Togglable buttonLabel="Add Blog" ref={blogFormRef}>
-          <BlogForm notifier={notify} blogAppend={blogAppend} />
+          <BlogForm blogAppend={blogAppend} />
         </Togglable>
       </div>
     )
@@ -124,7 +155,6 @@ const App = () => {
           key={blog.id}
           blog={blog}
           liker={likeBlog}
-          notifier={notify}
           remover={removeBlog}
         />
       )}
