@@ -42,6 +42,7 @@ const LoginForm = ({ userChange, setToken, notifier }) => {
           type="text"
           value={username}
           name="Username"
+          id="login-username"
           onChange={({ target }) => setUsername(target.value)}
         />
       </label>
@@ -50,10 +51,11 @@ const LoginForm = ({ userChange, setToken, notifier }) => {
           type="password"
           value={password}
           name="Password"
+          id="login-password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </label>
-      <button type="submit">Login</button>
+      <button type="submit" id="login-submit" >Login</button>
     </form>
   )
 }

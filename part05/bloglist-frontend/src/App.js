@@ -114,14 +114,14 @@ const App = () => {
 
     setTimeout(() => {
       setNotification(null)
-    }, 5000)
+    }, 10000)
   }
 
   // Following two functions just to make things compact
   const loginForm = () => {
     return (
       <LoginForm userChange={setUser}
-        // setToken={blogService.setToken}
+        setToken={(token) => { blogService.setToken(token) }}
         notifier={notify}
       />
     )
@@ -150,14 +150,16 @@ const App = () => {
       {user === null ? loginForm() : blogForm() }
 
       <h2>Blogs</h2>
-      {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          liker={likeBlog}
-          remover={removeBlog}
-        />
-      )}
+      <div id='blog-list'>
+        {blogs.map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            liker={likeBlog}
+            remover={removeBlog}
+          />
+        )}
+      </div>
     </div>
   )
 }

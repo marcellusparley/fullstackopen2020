@@ -48,7 +48,7 @@ const Blog = ({ blog, liker, remover }) => {
 
   return (
     <div style={blogStyle} className='blogItem'>
-      <label>
+      <label className='blog-label'>
         <b>{blog.title}</b> by {blog.author}
         <button onClick={toggleVisibility} className='toggleButton'>
           {toggleLabel()}
@@ -56,7 +56,7 @@ const Blog = ({ blog, liker, remover }) => {
       </label>
       <div style={hideStyle()} className="hidableBlogInfo">
         <p>{blog.url}</p>
-        <label>
+        <label className='likes-label' >
           Likes: {blog.likes}
           <button onClick={updateBlog} className='likeButton'>Like</button>
         </label>

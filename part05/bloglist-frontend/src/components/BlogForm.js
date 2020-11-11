@@ -38,6 +38,7 @@ const BlogForm = ({ blogAppend }) => {
           value={blogTitle}
           name="Title"
           className="blogTitle"
+          id='blog-title'
           onChange={({ target }) => setBlogTitle(target.value)}
         />
       </label>
@@ -47,6 +48,7 @@ const BlogForm = ({ blogAppend }) => {
           value={blogAuthor}
           name="Author"
           className='blogAuthor'
+          id='blog-author'
           onChange={({ target }) => setBlogAuthor(target.value)}
         />
       </label>
@@ -56,6 +58,7 @@ const BlogForm = ({ blogAppend }) => {
           value={blogURL}
           name="URL"
           className='blogURL'
+          id="blog-url"
           onChange={({ target }) => setBlogURL(target.value)}
         />
       </label>
@@ -69,7 +72,7 @@ const BlogForm = ({ blogAppend }) => {
         />
       </label>
       */}
-      <button type="submit">Add Blog</button>
+      <button type="submit" id="blog-submit" >Add Blog</button>
     </form>
   )
 }
