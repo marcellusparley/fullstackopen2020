@@ -22,8 +22,8 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+  //console.log('state now: ', state)
+  //console.log('action', action)
 
   switch (action.type) {
     //Finds the anecdote by id, updates its votecount, and then changes it 
