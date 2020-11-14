@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
-import { setNotification, resetNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 /* Anecdote list displays the anecdotes sorted by votes, and handles updating
  * their vote counts when button is pressed */
@@ -20,12 +20,9 @@ const AnecdoteList = () => {
 
   // Handler for button, dispatches actions to like the anecdote, 
   // and set and display notification for 5 secs
-  const vote = (id) => {
-    //console.log('vote', id)
-    dispatch(voteAnecdote(id))
-    const text = anecdotes.find(a => a.id === id).content
-    dispatch(setNotification(`You voted for '${text}'`))
-    setTimeout(() => dispatch(resetNotification()), 5000)
+  const vote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote))
+    dispatch(setNotification(`You voted for '${anecdote.content}'`, 5))
   }
 
   // Helper function for sorting the list
@@ -44,7 +41,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
