@@ -9,13 +9,19 @@ const reducer = (state = '', action) => {
   }
 }
 
+const timeouts = []
+
 export const setNotification = (notification, timeout) => {
   return async dispatch => {
     dispatch ({
       type: 'SET_NOTIFICATION',
       notification: notification
     })
-    setTimeout(() => dispatch(resetNotification()), timeout * 1000)
+
+    while(timeouts.length > 0)
+      clearTimeout(timeouts.pop())
+
+    timeouts.push(setTimeout(() => dispatch(resetNotification()), timeout * 1000))
   }
 }
 
