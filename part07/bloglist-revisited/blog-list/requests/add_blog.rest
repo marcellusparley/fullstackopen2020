@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN1YWpnIiwiaWQiOiI1ZjlkYjhjN2NjN2FhNzIwZmRjM2M5MjIiLCJpYXQiOjE2MDQxODAwNjF9.qoE4N1oiwYhL-RsBDpdsz-_sCpAhaSehEsocGeDPH-Q
+
+{
+    "title": "Screwing things up, gracefully",
+    "author": "Tim Mit",
+    "url": "www.ieatass.tim",
+    "likes": 69
+}
