@@ -1,14 +1,20 @@
 import React, { useEffect, useRef } from 'react'
 import BlogList from './components/BlogList'
+import UserList from './components/UserList'
+import UserView from './components/UserView'
 import BlogForm from './components/BlogForm'
+import BlogView from './components/BlogView'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
+import NavMenu from './components/NavMenu'
 import blogService from './services/blogs'
 import { setNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
+import { getUsersInfo } from './reducers/usersInfoReducer'
 import { logoutUser, alreadyLoggedIn } from './reducers/userReducer'
+import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom'
 import './App.css'
 
 /* App is the main component
@@ -25,14 +31,18 @@ import './App.css'
  * */
 const App = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const notification = useSelector(state => state.notification)
   const user = useSelector(state => state.user)
+  const blogs = useSelector(state => state.blogs)
+  const usersInfo = useSelector(state => state.usersInfo)
   const blogFormRef = useRef()
 
 
   // Get initial blogs state
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(getUsersInfo())
   }, [dispatch])
 
   // Get token from local storage if it exists
@@ -52,6 +62,7 @@ const App = () => {
     try {
       await dispatch(logoutUser())
       notify('Logged out', 'success')
+      //history.push('/')
     } catch (e) {
       notify(e.response.data.error, 'error')
     }
@@ -77,10 +88,6 @@ const App = () => {
   const blogForm = () => {
     return (
       <div>
-        <label>
-          {user.name} Logged-in
-          <button onClick={handleLogout}>Logout</button>
-        </label>
         <Togglable buttonLabel="Add Blog" ref={blogFormRef}>
           <BlogForm />
         </Togglable>
@@ -88,15 +95,39 @@ const App = () => {
     )
   }
 
+  const userMatch = useRouteMatch('/users/:id')
+  const userToView = userMatch
+    ? usersInfo.find(u => u.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const blogToView = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
+    : null
+
   return (
     <div>
+      <NavMenu user={user} handleLogout={handleLogout} />
+
       <h1>Blog App</h1>
 
       <Notification notification={notification} />
 
-      {user === null ? loginForm() : blogForm() }
-
-      <BlogList />
+      <Switch>
+        <Route path='/blogs/:id'>
+          <BlogView blog={blogToView} />
+        </Route>
+        <Route path='/users/:id'>
+          <UserView user={userToView} />
+        </Route>
+        <Route path='/users'>
+          <UserList />
+        </Route>
+        <Route path='/'>
+          {user === null ? loginForm() : blogForm() }
+          <BlogList />
+        </Route>
+      </Switch>
 
     </div>
   )
