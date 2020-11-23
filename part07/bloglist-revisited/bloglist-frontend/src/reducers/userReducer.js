@@ -1,3 +1,4 @@
+// Reducer for user logging in and out
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 

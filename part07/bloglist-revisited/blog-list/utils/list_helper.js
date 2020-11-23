@@ -1,3 +1,4 @@
+// A collection of functions specifically for use in testing
 const dummy = (blogs) => {
   console.log(blogs)
   return 1

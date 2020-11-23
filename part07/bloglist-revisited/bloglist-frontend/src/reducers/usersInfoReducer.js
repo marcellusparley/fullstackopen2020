@@ -1,3 +1,4 @@
+// Reducer for getting user information
 import userService from '../services/users'
 
 const reducer = (state = [], action) => {

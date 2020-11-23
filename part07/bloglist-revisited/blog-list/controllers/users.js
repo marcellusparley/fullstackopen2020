@@ -1,10 +1,13 @@
+// Router for users
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 
+// Adding a user
 usersRouter.post('/', async (request, response) => {
   const body = request.body
 
+  // Check that password is at least 3 characters
   if (body.password.length <= 3)
     return response.status(400).json({ error: 'password must be greater than 3 characters' })
 
@@ -21,6 +24,7 @@ usersRouter.post('/', async (request, response) => {
   response.json(savedUser)
 })
 
+// Gets all user information and embeds their added blogs into the response
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({})
     .populate('blogs', { title: 1, author: 1, url: 1, likes: 1 })

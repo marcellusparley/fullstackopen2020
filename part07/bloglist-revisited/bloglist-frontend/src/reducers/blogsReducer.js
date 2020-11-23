@@ -1,3 +1,4 @@
+// Reducer for blogs
 import blogService from '../services/blogs'
 
 const reducer = (state = [], action) => {
@@ -17,6 +18,10 @@ const reducer = (state = [], action) => {
     const removed = action.data
     return [...state].filter(b => b.id !== removed.id)
   }
+  case 'COMMENT': {
+    const commentedBlog = action.data
+    return [...state.filter(b => b.id !== commentedBlog.id), commentedBlog]
+  }
   default:
     return state
   }
@@ -34,9 +39,19 @@ export const initializeBlogs = () => {
 
 export const likeBlog = (blog) => {
   return async dispatch => {
-    const newBlog = await blogService.update(blog.id, { ...blog, likes: blog.likes + 1 })
+    const newBlog = await blogService.like(blog.id, { ...blog, likes: blog.likes + 1 })
     dispatch({
       type: 'LIKE',
+      data: newBlog
+    })
+  }
+}
+
+export const commentBlog = (blog, comment) => {
+  return async dispatch => {
+    const newBlog = await blogService.comment(blog.id, { ...blog, comments: blog.comments.concat(comment) })
+    dispatch({
+      type: 'COMMENT',
       data: newBlog
     })
   }

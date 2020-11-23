@@ -1,6 +1,8 @@
+// Displays a table listing all the blogs in the state
 import React from 'react'
 import { useSelector } from 'react-redux'
 import Blog from './Blog'
+import { Table } from 'react-bootstrap'
 
 const BlogList = () => {
   const blogs = useSelector(state => state.blogs)
@@ -13,14 +15,20 @@ const BlogList = () => {
   return (
     <div>
       <h2>Blogs</h2>
-      <div id='blog-list'>
-        {[...blogs].sort(sortHelper).map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-          />
-        )}
-      </div>
+      <Table striped>
+        <tbody>
+          {[...blogs].sort(sortHelper).map(blog =>
+            <tr key={blog.id}>
+              <td>
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                />
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }

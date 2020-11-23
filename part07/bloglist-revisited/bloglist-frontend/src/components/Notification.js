@@ -1,17 +1,25 @@
+// Component to display the current notification state
 import React from 'react'
 import { useSelector } from 'react-redux'
-
-// Component to display the current notification state (from App.js)
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
 
-  if (notification === null) {
-    return null
+  // Helper for tranlating my notification to the Bootstrap variant
+  const noteType = (t) => {
+    if (t === 'success')
+      return t
+    else
+      return 'danger'
   }
 
   return (
-    <div className={notification.type}>{notification.message}</div>
+    <>
+      {notification &&
+        <Alert variant={noteType(notification.type)}>{notification.message}</Alert>
+      }
+    </>
   )
 }
 

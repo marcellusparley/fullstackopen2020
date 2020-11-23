@@ -1,3 +1,4 @@
+// Handles api call to get user information
 import axios from 'axios'
 
 const baseUrl = '/api/users'

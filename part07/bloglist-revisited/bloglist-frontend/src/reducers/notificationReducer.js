@@ -1,3 +1,4 @@
+// Reducer for notifications
 const reducer = (state = '', action) => {
   switch (action.type) {
   case 'SET_NOTIFICATION':
@@ -9,6 +10,7 @@ const reducer = (state = '', action) => {
   }
 }
 
+// Needs to track the timeouts so it can clear them
 const timeouts = []
 
 export const setNotification = (notification, timeout) => {
@@ -18,6 +20,7 @@ export const setNotification = (notification, timeout) => {
       notification: notification
     })
 
+    // Clears all timeouts so previous ones don't interfere with new one
     while(timeouts.length > 0)
       clearTimeout(timeouts.pop())
 

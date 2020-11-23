@@ -1,16 +1,16 @@
-/* LoginForm component. Show form for logging in and handles
- * the states for it's inputs.
- * */
+// LoginForm component. Show form for logging in
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  // Helper for dispatching notifications
   const notifier = (message, type) => {
     dispatch(setNotification({ message, type }, 5))
   }
@@ -30,28 +30,40 @@ const LoginForm = () => {
     }
   }
 
+  const topMargin = {
+    marginTop: 10
+  }
+
   return (
-    <form onSubmit={handleLogin}>
-      <label>Username:
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          id="login-username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </label>
-      <label>Password:
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          id="login-password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </label>
-      <button type="submit" id="login-submit" >Login</button>
-    </form>
+    <div>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>Username:</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            name="Username"
+            id="login-username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+          <Form.Label>Password:</Form.Label>
+          <Form.Control
+            type="password"
+            value={password}
+            name="Password"
+            id="login-password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+          <Button style={topMargin}
+            variant="primary"
+            type="submit"
+            id="login-submit"
+          >
+            Login
+          </Button>
+        </Form.Group>
+      </Form>
+    </div>
   )
 }
 

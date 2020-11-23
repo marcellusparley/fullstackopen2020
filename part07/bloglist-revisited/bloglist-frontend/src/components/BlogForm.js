@@ -1,20 +1,17 @@
-/* BlogForm component to display the form for adding blogs and
- * handling the api call through the blogService blogs.js. Handles
- * states for it's inputs
- * */
+// BlogForm component to display the form for adding blogs and
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = () => {
   const dispatch = useDispatch()
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogURL, setBlogURL] = useState('')
-  //const [blogLikes, setBlogLikes] = useState(0)
 
-  // Adds blog via dispatch and notifies the user
+  // Adds blog and notifies the user
   const addHandler = async (event) => {
     event.preventDefault()
 
@@ -22,9 +19,9 @@ const BlogForm = () => {
       title: blogTitle,
       author: blogAuthor,
       url: blogURL,
-      //likes: Number(blogLikes)
     }
 
+    // Clear the input fields
     setBlogTitle('')
     setBlogAuthor('')
     setBlogURL('')
@@ -39,9 +36,10 @@ const BlogForm = () => {
   }
 
   return (
-    <form onSubmit={addHandler} className='blogForm'>
-      <label>Title:
-        <input
+    <Form onSubmit={addHandler} >
+      <Form.Group>
+        <Form.Label>Title:</Form.Label>
+        <Form.Control
           type="text"
           value={blogTitle}
           name="Title"
@@ -49,9 +47,8 @@ const BlogForm = () => {
           id='blog-title'
           onChange={({ target }) => setBlogTitle(target.value)}
         />
-      </label>
-      <label>Author:
-        <input
+        <Form.Label>Author:</Form.Label>
+        <Form.Control
           type="text"
           value={blogAuthor}
           name="Author"
@@ -59,9 +56,8 @@ const BlogForm = () => {
           id='blog-author'
           onChange={({ target }) => setBlogAuthor(target.value)}
         />
-      </label>
-      <label>URL:
-        <input
+        <Form.Label>URL:</Form.Label>
+        <Form.Control
           type="text"
           value={blogURL}
           name="URL"
@@ -69,19 +65,9 @@ const BlogForm = () => {
           id="blog-url"
           onChange={({ target }) => setBlogURL(target.value)}
         />
-      </label>
-      {/*
-      <label>Likes:
-        <input
-          type="number"
-          value={blogLikes}
-          name="Likes"
-          onChange={({ target }) => setBlogLikes(target.value)}
-        />
-      </label>
-      */}
-      <button type="submit" id="blog-submit" >Add Blog</button>
-    </form>
+        <Button variant='primary' type="submit" id="blog-submit" >Add Blog</Button>
+      </Form.Group>
+    </Form>
   )
 }
 

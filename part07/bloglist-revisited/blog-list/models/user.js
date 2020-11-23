@@ -1,3 +1,4 @@
+// Model for users db collection
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 

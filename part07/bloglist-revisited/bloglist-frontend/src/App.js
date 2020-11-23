@@ -1,4 +1,9 @@
+// App is the main component
 import React, { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, useRouteMatch, /*useHistory*/ } from 'react-router-dom'
+
+// Component imports
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
 import UserView from './components/UserView'
@@ -8,30 +13,22 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import NavMenu from './components/NavMenu'
+
+// Service import
 import blogService from './services/blogs'
+
+// Reducer imports
 import { setNotification } from './reducers/notificationReducer'
-import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { getUsersInfo } from './reducers/usersInfoReducer'
 import { logoutUser, alreadyLoggedIn } from './reducers/userReducer'
-import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom'
-import './App.css'
 
-/* App is the main component
- * BlogList is the component that displays each Blog component
- * BlogForm displays when user is logged in. It handles the form for adding
- * new Blogs to the database. It handles the states for its own inputs.
- * LoginForm only shows when user is not logged in. Allows user to login. It
- * handles the states for it's inputs.
- * Notification displays messages to user controlled by notification state
- * Togglable is a component that allows the hiding and showing of it's children
- * blogService handles adding blogs and manages the token.
- * loginService handles logging in
- * uses redux store for user, blogs, and notification states
- * */
+// CSS disabled since using Bootstrap
+//import './App.css'
+
 const App = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
+  //const history = useHistory()
   const notification = useSelector(state => state.notification)
   const user = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
@@ -68,6 +65,7 @@ const App = () => {
     }
   }
 
+  // Helper for dispatching notifications
   const notify = (message, mtype) => {
     dispatch(setNotification(
       {
@@ -95,6 +93,7 @@ const App = () => {
     )
   }
 
+  // Parameter routing set up
   const userMatch = useRouteMatch('/users/:id')
   const userToView = userMatch
     ? usersInfo.find(u => u.id === userMatch.params.id)
@@ -106,7 +105,7 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <div className='container'>
       <NavMenu user={user} handleLogout={handleLogout} />
 
       <h1>Blog App</h1>

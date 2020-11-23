@@ -1,6 +1,7 @@
 // Component that toggles the visiblity of it's children components
 import React, { useState, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from 'react-bootstrap'
 
 const Togglable = React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
@@ -21,11 +22,23 @@ const Togglable = React.forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility} id='toggle-blog-on' >{props.buttonLabel}</button>
+        <Button
+          variant='primary'
+          onClick={toggleVisibility}
+          id='toggle-blog-on'
+        >
+          {props.buttonLabel}
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility} id='toggle-blog-off' >Cancel</button>
+        <Button
+          variant='secondary'
+          onClick={toggleVisibility}
+          id='toggle-blog-off'
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   )
