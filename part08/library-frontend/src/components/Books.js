@@ -1,42 +1,98 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
+  const [filterList, setFilters] = useState([])
+  const [genreFilter, setGenreFilter] = useState('')
+  const [books, setBooks] = useState([])
   const result = useQuery(ALL_BOOKS)
+
+  useEffect(() => {
+    if (result.data)
+      setBooks(result.data.allBooks)
+  }, [result.data])
 
   if (!props.show) {
     return null
   }
 
-  if (result.loading) return <div>Loading...</div>
+  const filterer = (book) => {
+    if (filterList.length > 0)
+      return book.genres.some(b => filterList.indexOf(b) !== -1)
+    else
+      return true
+  }
 
-  const books = result.data.allBooks
+  const resultTable = () => {
+    if (result.loading)
+      return <div>Loading...</div>
+    else {
+      return (
+        <>
+          <table>
+            <tbody>
+              <tr>
+                <th>
+                  Title
+                </th>
+                <th>
+                  Author
+                </th>
+                <th>
+                  Published
+                </th>
+              </tr>
+              {books
+                .filter(filterer)
+                .map(b =>
+                <tr key={b.id}>
+                  <td>{b.title}</td>
+                  <td>{b.author.name}</td>
+                  <td>{b.published}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )
+    }
+  }
+
+
+  const removeFilter = (filter) => {
+    setFilters(filterList.filter(g => g !== filter))
+    console.log(filterList)
+  }
+
+  const addFilter = (event) => {
+    event.preventDefault()
+    setFilters(filterList.concat(genreFilter))
+    console.log(filterList)
+    setGenreFilter('')
+  }
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Books</h2>
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>
-              author
-            </th>
-            <th>
-              published
-            </th>
-          </tr>
-          {books.map(a =>
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {resultTable()}
+
+      <form onSubmit={addFilter}>
+        <input type='text' value={genreFilter} 
+          placeholder='Filter by genre'
+          onChange={(e) => setGenreFilter(e.target.value)} />
+        <button type='submit'>Add Filter</button>
+      </form>
+
+      {(filterList.length !== 0) &&
+      <div>
+        Filters:
+        {filterList.map(f =>
+          <button key={f} onClick={() => removeFilter(f)}>{f}</button>
+        )}
+      </div>
+      }
     </div>
   )
 }

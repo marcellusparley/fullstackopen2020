@@ -49,7 +49,7 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author: String, genre: String): [Book!]!
+    allBooks(author: String, genres: [String]): [Book!]!
     allAuthors: [Author!]!
     me: User
   }
@@ -174,17 +174,17 @@ const resolvers = {
 
       // If there is args for both author name and/or genre finds only
       // matching authors, else it finds all books in db
-      if (args.author && args.genre) {
+      if (args.author && args.genres && args.genres.length > 0) {
         const author = await Author.findOne({ name: args.author })
         return Book.find({ author: author._id },
-          { genre: { $in: [args.genre]}})
+          { genre: { $in: args.genres }})
 
-      } else if (args.author) {
+      } else if (args.author && (!args.genres || args.genres.length === 0)) {
         const author = await Author.findOne({ name: args.author })
         return Book.find({ author: author._id })
 
-      } else if (args.genre)
-        return Book.find({ genres: { $in: [args.genre] }})
+      } else if (args.genres && args.genres.length > 0)
+        return Book.find({ genres: { $in: args.genres }})
 
       else {
         return Book.find({})}

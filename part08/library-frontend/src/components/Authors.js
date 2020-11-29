@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
@@ -59,10 +59,10 @@ const Authors = (props) => {
 
       <h3>Set Birthyear</h3>
       <form onSubmit={submit}>
-        <select value={authorName} 
+        <select value={authorName}
           onChange={({ target }) => {setAuthorName(target.value)}}>
 
-          <option disabled selected value=''>Select Author</option>
+          <option disabled value=''>Select Author</option>
 
           {authors.map(a => 
             <option key={a.id} value={a.name}>{a.name}</option>)}
