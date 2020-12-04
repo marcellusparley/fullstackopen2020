@@ -3,6 +3,10 @@ export enum Gender {
   Female = 'female'
 }
 
+//eslint-disable-next-line
+export interface JournalEntry {
+}
+
 export interface DiagnosesEntry {
   code: string;
   name: string;
@@ -16,8 +20,11 @@ export interface PatientEntry {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: JournalEntry[]
 }
 
 export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
+
+export type PublicPatient = Omit<PatientEntry, 'ssn' | 'entries'>;
 
 export type NewPatientEntry = Omit<PatientEntry, 'id'>;
