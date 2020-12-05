@@ -45,6 +45,7 @@ const addEntry = (entry: NewPatientEntry): PatientEntry => {
   
   const newPatientEntry = {
     id: id,
+    entries: [],
     ...entry
   };
 
