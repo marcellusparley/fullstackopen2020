@@ -1,12 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useStateValue, updatePatient } from "../state";
-import { Patient } from "../types";
+import { Patient, Diagnosis, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
+
+const HospitalEntry: React.FC<{ entry: Entry; diagnoses: Map<string, string> }> = ({ entry, diagnoses }) => {
+  return (
+    <div>
+      <h4>{entry.date}</h4>
+      <i className="huge hospital icon" />
+      <p>{entry.description}</p>  
+      {entry.diagnosisCodes && <ul>
+        {entry.diagnosisCodes.map(d =>
+          <li key={d}>{d} : {diagnoses && diagnoses.get(d)}</li>
+        )}
+      </ul>
+      }
+    </div>
+  );
+};
+
+const OccupationalHealthcareEntry: React.FC<{ entry: Entry; diagnoses: Map<string, string> }> = ({ entry, diagnoses }) => {
+  return (
+    <div>
+      <h4>{entry.date}</h4>
+      <i className="huge fax icon" />
+      <p>{entry.description}</p>  
+      {entry.diagnosisCodes && <ul>
+        {entry.diagnosisCodes.map(d =>
+          <li key={d}>{d} : {diagnoses && diagnoses.get(d)}</li>
+        )}
+      </ul>
+      }
+    </div>
+  );
+};
+
+const HealthCheckEntry: React.FC<{ entry: Entry; diagnoses: Map<string, string> }> = ({ entry, diagnoses }) => {
+  return (
+    <div>
+      <h4>{entry.date}</h4>
+      <i className="huge medkit icon" />
+      <p>{entry.description}</p>  
+      {entry.diagnosisCodes && <ul>
+        {entry.diagnosisCodes.map(d =>
+          <li key={d}>{d} : {diagnoses && diagnoses.get(d)}</li>
+        )}
+      </ul>
+      }
+    </div>
+  );
+};
+
+const EntryDetails: React.FC<{ entry: Entry; diagnoses: Map<string,string> }> = (props) => {
+  switch (props.entry.type) {
+    case "Hospital":
+      return <HospitalEntry {...props} />;
+    case "OccupationalHealthcare":
+      return <OccupationalHealthcareEntry {...props} />;
+    case "HealthCheck":
+      return <HealthCheckEntry {...props} />;
+    default:
+      return null;
+  }
+};
 
 const PatientInfoPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
+  const [diagnoses, setDiagnoses] = useState<Map<string, string>>();
+  const [patient, setPatient] = useState<Patient>();
   const { id } = useParams<{ id: string }>();
 
   const getPatientInfo = async (id: string) => {
@@ -19,27 +82,35 @@ const PatientInfoPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!patients[id].entries){
+    setPatient(Object.values(patients).find(p => p.id === id));
+
+    if (patient && !patient.entries){
       getPatientInfo(id);
+      setPatient(Object.values(patients).find(p => p.id === id));
     }
+
+    axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`)
+      .then( result => {
+        const diagnosesMap = new Map(result.data.map((d): [string, string] => [d.code, d.name]));
+        setDiagnoses(diagnosesMap);
+      })
+      .catch( err => {
+        console.log(err.message);
+      });
   });
+
+  if (!patient)
+    return null;
 
   return (
     <div>
-      <h3>{patients[id].name}</h3>
-      <p>{patients[id].gender}</p>
-      <p>{patients[id].occupation}</p>
+      <h3>{patient.name}</h3>
+      <p>{patient.gender}</p>
+      <p>{patient.occupation}</p>
 
       <h4>Entries</h4>
-      {patients[id].entries.map(e => 
-        <div key={e.id}>
-          <p>{e.date} {e.description}</p>  
-          <ul>
-            {e.diagnosisCodes.map(d => 
-              <li key={d.code}>{d.code} : {}</li>
-            )}
-          </ul>
-        </div>
+      {diagnoses && patient.entries.map(e => 
+        <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
       )}
     </div>
   );

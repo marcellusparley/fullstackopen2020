@@ -13,7 +13,7 @@ app.get('/api/ping', (_req, res) => {
   res.send('pong');
 });
 
-app.use('/api/diaries', diognosesRouter);
+app.use('/api/diagnoses', diognosesRouter);
 app.use('/api/patients', patientsRouter);
 
 app.listen(PORT, () => {
